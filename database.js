@@ -5,8 +5,9 @@ const pool = mysql.createPool({
     host:'127.0.0.1',
     user:'root',
     password: 'toor',
-    database: 'jcidatascraper_db'
+    database: 'jci_db'
 }).promise();
 
 // Export the pool
-module.exports = pool;
+// module.exports = pool;
+export default pool;
