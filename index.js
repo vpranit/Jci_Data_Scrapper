@@ -1,4 +1,4 @@
-import { featchzones, featchMemberDetails } from './service.js';
+import { featchData } from './service.js';
 import { insertZoneData, insertMemberData } from './dataHandeler.js';
 
 async function main() {
@@ -9,7 +9,7 @@ async function main() {
 
     try {
 
-        const zoneData1 = await featchzones(url_zones_NC, { 'additional': { 'UserInterface': uf1 } }); // Wait for zoneData1 to be fetched
+        const zoneData1 = await featchData(url_zones_NC, { 'additional': { 'UserInterface': uf1 } }); // Wait for zoneData1 to be fetched
         const formattedData1 = zoneData1.map(obj => {
             if (Number.isInteger(obj.value)) {
                 return [obj.value, obj.text, uf1];
@@ -17,7 +17,7 @@ async function main() {
         }).filter(data => data !== null);
         await insertZoneData(formattedData1); // Wait for the insertion of zoneData1
 
-        const zoneData2 = await featchzones(url_zones_ZGB, { 'additional': { 'UserInterface': uf2 } }); // Wait for zoneData2 to be fetched
+        const zoneData2 = await featchData(url_zones_ZGB, { 'additional': { 'UserInterface': uf2 } }); // Wait for zoneData2 to be fetched
         const formattedData2 = zoneData2.map(obj => {
             if (Number.isInteger(obj.value)) {
                 return [obj.value, obj.text, uf2];
@@ -25,11 +25,19 @@ async function main() {
         }).filter(data => data !== null);
         await insertZoneData(formattedData2); // Wait for the insertion of zoneData2
 
-        const membersDetailsNGB = await featchMemberDetails(url_memberlist, { 'UserInterface': uf1 });  // Wait for membersDetails to be fetched
+        const membersDetailsNGB = await featchData(url_memberlist, { 'UserInterface': uf1 });  // Wait for membersDetails to be fetched
         const formattedMemberDataNGB = membersDetailsNGB.map(obj => [obj.MemberId, obj.MemberName, obj.ZoneId, obj.ZoneName, obj.EmailId, obj.MobileNo]);
         insertMemberData(formattedMemberDataNGB);
 
-
+        for (const zone of zoneData2) {
+            // console.log(zone.value);
+            const membersDetailsZGB = await featchData(url_memberlist, { "UserInterface": uf2 ,"ZoneCode": zone.value});  // Wait for membersDetails to be fetched
+            const formattedMemberDataZGB = membersDetailsZGB.map(obj => [obj.MemberId, obj.MemberName, obj.ZoneId, obj.ZoneName, obj.EmailId, obj.MobileNo]);
+            insertMemberData(formattedMemberDataZGB);
+            // console.log(zoneData2);
+            // console.log("----------------------------------------------------------------------------------------------------");
+            // console.log(formattedMemberDataZGB);
+        }
         
     } catch (error) {
         console.error('Error in main function:', error);
