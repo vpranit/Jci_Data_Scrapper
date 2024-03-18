@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 let userInterface, zoneCode;
-const url_all_zones = "https://erp.jciindia.in/lib/api/wm/zone/options";
+
 const url_memberlist = "https://erp.jciindia.in/lib/api/governing-board/members-lists";
 
 async function fetchDataNGB() {
@@ -46,9 +46,9 @@ async function fetchDataNGB() {
   }
 }
 
-async function featchzones(payload) {
+async function featchzones(url_zones,payload) {
   try {
-    const response = await axios.post(url_all_zones, payload);
+    const response = await axios.post(url_zones, payload);
     const records = response.data.records;
     return records;
   } catch (error) {
